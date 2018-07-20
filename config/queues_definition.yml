@@ -1,0 +1,35 @@
+L1:
+  group_size: 6
+  description: 'Leviathan'
+
+L2:
+  group_size: 6
+  description: 'Leviathan, Eater of worlds'
+
+L3:
+  group_size: 6
+  description: 'Leviathan, Spire of Stars'
+
+strike:
+  group_size: 3
+  description: 'Strike'
+
+heroic_strike:
+  grouo_size: 3
+  description: 'Heroic Strike'
+
+crisol:
+  group_size: 4
+  description: 'Crisol'
+
+crisol_event:
+  group_size: 4
+  description: 'Crisol event'
+
+protocolos:
+  group_size: 9
+  description: 'Protocolos'
+
+any:
+  group_size: 2
+  description: 'Unirse a cualquiera'

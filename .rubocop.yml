@@ -1,0 +1,8 @@
+Metrics/AbcSize:
+  Enabled: false
+
+Style/GlobalVars:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100

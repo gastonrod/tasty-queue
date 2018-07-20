@@ -1,0 +1,13 @@
+esp:
+  bot_killed: "'%s' recibido. Matando el bot."
+  registered_user: 'Te registre'
+  queue_full: "Ya son %d para jugar %s\n"
+  queue_doesnt_exist: "La cola '%s' no existe. Escribi !queues para ver las colas disponibles"
+  already_in_queue: "Ya estas registrado en esta cola."
+  available_queues: '```Las colas disponibles son:'
+  join: "  q!join %s para unirte a la cola %s"
+  join_this_voice_channel: "Unite al canal de voz de %s"
+  for_this_queue: "Para la cola %s: "
+  queue_status: "Las colas a las que estas suscripto son:"
+  removed_user: 'Fuiste eliminado de la cola.'
+  not_in_queue: 'No estas anotado en esta cola.'
