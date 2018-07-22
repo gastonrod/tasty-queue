@@ -17,12 +17,13 @@ module Commands
       i18n = $i18n
 
       message = i18n[:queue_status]
+      return user.pm(i18n[:not_signed_up_in_any_queue]) if queues.nil? || queues.empty?
       queues.each do |queue|
         other_users = queue.users
         users_mentions = ''
         other_users.each { |u| users_mentions << ' ' << u.mention }
-        message = message + "\n " + format(i18n[:for_this_queue], queue.description) + users_mentions +
-          "[#{queue.users.size}/#{queue.group_size}]"
+        message = message + "\n" + format(i18n[:for_this_queue], queue.description) + users_mentions +
+          " [#{queue.users.size}/#{queue.group_size}]"
       end
       puts message
       user.pm(message)

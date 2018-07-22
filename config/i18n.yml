@@ -11,3 +11,4 @@ esp:
   queue_status: "Las colas a las que estas suscripto son:"
   removed_user: 'Fuiste eliminado de la cola.'
   not_in_queue: 'No estas anotado en esta cola.'
+  not_signed_up_in_any_queue: 'No estas anotado en ninguna cola!'

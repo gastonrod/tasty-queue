@@ -9,7 +9,7 @@ class MatchMakingBot
 
   def notify_queue_is_full(queue)
     users = queue.users
-    message = format(i18n[:queue_full], users.length, queue.name)
+    message = format(i18n[:queue_full], users.length, queue.description)
     users.each { |user| message << "\n#{user.mention}" }
     message << "\n#{format(i18n[:join_this_voice_channel], queue.description)}"
     users.each { |user| user.pm message }
@@ -50,8 +50,4 @@ class MatchMakingBot
   end
 
   attr_reader :bot_killer_char
-
-  def queues_manager
-    @queues_manager ||= $queues_manager
-  end
 end
