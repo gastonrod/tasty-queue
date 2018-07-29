@@ -4,8 +4,10 @@ TastyQ or TastyQueue is a match-making bot for discord. It uses the [discordrb](
 
 ## The bot
 
-You can add my bot on discord, it's user is `TastyQ#0770`.
-Currently it's being developed so most of the time it'll be off (until I consider it to be finished).
+You can add my bot on discord, its user is `TastyQ#0770`.
+
+Currently it's being developed so most of the time the bot will be offline (until I consider it to be finished).
+
 So far it only counts with Destiny 2 queues. They can be viewed in `config/queues_definition.yml`
 
 ### Its commands:
@@ -26,7 +28,7 @@ Change the tokens used for the bot (I used `dotenv`'s gem).
 
 I version ruby with ruby `rbenv` and use the `2.3.0-dev` version.
 
-## TO-DO / Nice features to have
+## TO-DO / Would be nice features to have
 
 * Integration with Destiny 2's API to be able to match-make with mmr/item level.
 * Multi-clan availability (so far it would lump everyone together in the same match-making system).
