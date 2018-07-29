@@ -1,4 +1,3 @@
-
 module Commands
   # description: 'Check the status of the queues you are signed up to'
   # useage: 'q!status',
@@ -22,8 +21,8 @@ module Commands
         other_users = queue.users
         users_mentions = ''
         other_users.each { |u| users_mentions << ' ' << u.mention }
-        message = message + "\n" + format(i18n[:for_this_queue], queue.description) + users_mentions +
-          " [#{queue.users.size}/#{queue.group_size}]"
+        message = message + "\n" + format(i18n[:for_this_queue], queue.description) +
+                  users_mentions + " [#{queue.users.size}/#{queue.group_size}]"
       end
       puts message
       user.pm(message)

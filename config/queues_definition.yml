@@ -15,7 +15,7 @@ strike:
   description: 'Strike'
 
 heroic_strike:
-  grouo_size: 3
+  group_size: 3
   description: 'Heroic Strike'
 
 crisol:
@@ -31,5 +31,5 @@ protocolos:
   description: 'Protocolos'
 
 any:
-  group_size: 2
-  description: 'Unirse a cualquiera'
+  description: 'Cualquiera'
+

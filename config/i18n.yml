@@ -1,6 +1,6 @@
 esp:
   bot_killed: "'%s' recibido. Matando el bot."
-  registered_user: 'Te registre'
+  registered_user: "Te registre en la cola %s"
   queue_full: "Ya son %d para jugar %s\n"
   queue_doesnt_exist: "La cola '%s' no existe. Escribi !queues para ver las colas disponibles"
   already_in_queue: "Ya estas registrado en esta cola."
@@ -12,3 +12,4 @@ esp:
   removed_user: 'Fuiste eliminado de la cola.'
   not_in_queue: 'No estas anotado en esta cola.'
   not_signed_up_in_any_queue: 'No estas anotado en ninguna cola!'
+  cant_join_any: 'Ya estas registrado en alguna cola, no te podes registrar en ésta. Si te queres registrar en la cola default te tenes que desenlistar de todas en las que estés. Probá con `q!leave all`.'
