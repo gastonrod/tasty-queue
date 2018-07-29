@@ -13,9 +13,18 @@ module Commands
     ) do |event, queue_name|
       queues_manager = Commands.queues_manager
       i18n = $i18n
+
       return event.user.pm i18n[:queue_doesnt_exist] % queue_name unless
-        queues_manager.queue_exists? queue_name
-      add_user_and_respond(event.user, queue_name, i18n, queues_manager)
+        queues_manager.queue_exists?(queue_name)
+
+      if queues_manager.group_queue?(queue_name)
+        queues_manager.get_queues_in_group(queue_name).each do |q_name|
+          add_user_and_respond(event.user, q_name, i18n, queues_manager)
+        end
+      else
+        add_user_and_respond(event.user, queue_name, i18n, queues_manager)
+      end
+      nil
     end
 
     def self.add_user_and_respond(user, queue_name, i18n, queues_manager)
@@ -23,14 +32,14 @@ module Commands
       add_user_enum = Commands::ADD_USER_ENUM
       message = ''
       case added_user
-        when add_user_enum[:filled_up_queue]
-          return
-        when add_user_enum[:added]
-          message =  i18n[:registered_user] % queues_manager.get_queue_description(queue_name)
-        when add_user_enum[:already_in_queue]
-          message = i18n[:already_in_queue]
-        when add_user_enum[:cant_join_any]
-          message = i18n[:cant_join_any] 
+      when add_user_enum[:filled_up_queue]
+        return
+      when add_user_enum[:added]
+        message = i18n[:registered_user] % queues_manager.get_queue_description(queue_name)
+      when add_user_enum[:already_in_queue]
+        message = i18n[:already_in_queue]
+      when add_user_enum[:cant_join_any]
+        message = i18n[:cant_join_any]
       end
       puts message
       user.pm(message)

@@ -20,7 +20,6 @@ class GroupQueue
     true
   end
 
-
   # Add a set of users to this queue.
   # @param [Set<Discordrb::User>] The users to add.
   # @return [Boolean] Whether every user was added or not.

@@ -1,35 +1,39 @@
-L1:
-  group_size: 6
-  description: 'Leviathan'
+normal_queues:
+  L1:
+    group_size: 6
+    description: 'Leviathan'
+  
+  L2:
+    group_size: 6
+    description: 'Leviathan, Eater of worlds'
+  
+  L3:
+    group_size: 6
+    description: 'Leviathan, Spire of Stars'
+  
+  strike:
+    group_size: 3
+    description: 'Strike'
+  
+  heroic_strike:
+    group_size: 3
+    description: 'Heroic Strike'
+  
+  crisol:
+    group_size: 4
+    description: 'Crisol'
+  
+  crisol_event:
+    group_size: 4
+    description: 'Crisol event'
+  
+  protocolos:
+    group_size: 9
+    description: 'Protocolos'
+  
+  any:
+    description: 'Cualquiera'
 
-L2:
-  group_size: 6
-  description: 'Leviathan, Eater of worlds'
-
-L3:
-  group_size: 6
-  description: 'Leviathan, Spire of Stars'
-
-strike:
-  group_size: 3
-  description: 'Strike'
-
-heroic_strike:
-  group_size: 3
-  description: 'Heroic Strike'
-
-crisol:
-  group_size: 4
-  description: 'Crisol'
-
-crisol_event:
-  group_size: 4
-  description: 'Crisol event'
-
-protocolos:
-  group_size: 9
-  description: 'Protocolos'
-
-any:
-  description: 'Cualquiera'
-
+group_queues:
+  leviathan:
+    queues: ['L1', 'L2', 'L3']

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Commands
   # description: 'Check the status of the queues you are signed up to'
   # useage: 'q!status',

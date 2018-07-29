@@ -25,7 +25,7 @@ class MatchMakingBot
   def run
     bot.run
   end
-  
+
   private
 
   # Load all the bot's commands and set up it's killer char listener.

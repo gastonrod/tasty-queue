@@ -4,7 +4,6 @@
 # Eventually it could have types of distinctions:
 #   mmr, clans, etc.
 class QueuesManager
-
   # Initialize the queues manager. So far this is the main class that manages
   #   the whole program.
   def initialize
@@ -25,7 +24,8 @@ class QueuesManager
   # with it's pretty description.
   def queues_names
     ans = {}
-    queues.map { |name, queue| ans = ans.merge(name => queue.description) }
+    queues.map { |name, queue| ans.merge!(name => queue.description) }
+    group_queues.map { |name, queues| ans.merge!(name => queues) }
     ans
   end
 
@@ -42,8 +42,8 @@ class QueuesManager
   # @param user [Discordrb::User] User that will join the queue.
   # @return [ADD_USER_ENUM value] The value according to each situation.
   def add_user_to_queue(queue_name, user)
-    return Commands::ADD_USER_ENUM[:already_in_queue] if !queues[queue_name] || 
-      user_in_queue?(queue_name, user)
+    return Commands::ADD_USER_ENUM[:already_in_queue] if !queues[queue_name] ||
+                                                         user_in_queue?(queue_name, user)
     queue = queues[queue_name]
     return add_to_any(user) if queue_name == 'any'
     add_queue_to_users_map queue, user
@@ -56,13 +56,19 @@ class QueuesManager
     end
   end
 
-
   # Removes a user from the specified queue
   # @param queue_name [String] The name by which the GroupQueue is identified.
   # @param user [Discordrb::User] The user that will be removed.
   def remove_user_from_queue(queue_name, user)
-    return false if queue_name != 'all' && (!queues[queue_name] || !queues[queue_name].user_in_queue?(user))
-    (queue_name == 'all') ? (users_queue_map[user].each { |queue| queue.remove_user user }):(queues[queue_name].remove_user user)
+    return false if queue_name != 'all' && (!queues[queue_name] ||
+                                            !queues[queue_name].user_in_queue?(user))
+    if queue_name == 'all'
+      users_queue_map[user].each do |queue|
+        queue.remove_user user
+      end
+    else
+      queues[queue_name].remove_user user
+    end
     remove_queue_from_users_map(queue_name, user)
     true
   end
@@ -70,7 +76,18 @@ class QueuesManager
   # Check if a determined queue exists.
   # @param queue_name [String] The name by which the GroupQueue is identified.
   def queue_exists?(queue_name)
-    queues[queue_name]
+    !queues[queue_name].nil? || !group_queues[queue_name].nil?
+  end
+
+  # Check if the group_name is a group queue.
+  def group_queue?(group_name)
+    !group_queues[group_name].nil?
+  end
+
+  # Get all the queues a group queue has.
+  # @return [Array[String]] the queue names that are encompassed in this group queue.
+  def get_queues_in_group(group_name)
+    group_queues[group_name]
   end
 
   # Start the bot
@@ -78,11 +95,11 @@ class QueuesManager
     bot.run
   end
 
-  # Called when there are enough players to play in a queue. 
-  # @param queue [GroupQueue] The queue that has filled up or it has enough 
+  # Called when there are enough players to play in a queue.
+  # @param queue [GroupQueue] The queue that has filled up or it has enough
   #                           players with people who joined the default queue).
   def handle_full_queue(queue)
-    if !queues['any'].empty?
+    unless queues['any'].empty?
       queue.add_users queues['any'].users
       queues['any'].empty!
     end
@@ -92,7 +109,7 @@ class QueuesManager
   end
 
   def get_queue_description(queue_name)
-    queues[queue_name].description                      
+    queues[queue_name].description
   end
 
   private
@@ -110,49 +127,64 @@ class QueuesManager
   # @param queue_name [String] The queue from which the user will be removed.
   # @param user [Discordrb::User] The user to be removed from the queue.
   def remove_queue_from_users_map(queue_name, user)
-    return users_queue_map[user] = nil if queue_name == 'any' || queue_name == 'all'
+    return users_queue_map[user] = nil if %w[any all].include? queue_name
     users_queue_map[user].delete queues[queue_name]
   end
 
   # Load all the queues from the queues_definition yaml file
   def load_queues
-    queues_hash = YAML.safe_load(File.read('../config/queues_definition.yml'))
+    queues_yaml = YAML.safe_load(File.read('../config/queues_definition.yml'))
+    normal_queues_hash = queues_yaml['normal_queues']
+    group_queues_hash = queues_yaml['group_queues']
 
     # Separate the any queue to load it after.
-    any_queue_params = queues_hash['any']
-    queues_hash.delete('any')
+    any_queue_params = normal_queues_hash['any']
+    normal_queues_hash.delete('any')
 
     # Load queues hash and get the minimum group_size
-    queues, minimum_amount = create_queues(queues_hash, 2**32 - 1)
+    queues, minimum_amount = create_queues(normal_queues_hash, 2**32 - 1)
 
     any_queue = { 'any' => GroupQueue.new('any', any_queue_params.merge(
                                                    'group_size' => minimum_amount
                                                  )) }
-    queues.merge(any_queue)
+    create_group_queues(group_queues_hash, queues)
+    queues.merge! any_queue
+  end
+
+  # Receives a [String] => [Array] hash, and with it creates the group queue.
+  def create_group_queues(group_queues_hash, _queues)
+    group_queues = {}
+    group_queues_hash.each do |group_name, queues_array|
+      group_queues.merge!(group_name => queues_array['queues'])
+    end
+    @group_queues = group_queues
   end
 
   # Receives a [String]=>[Hash] hash, and with it creates the GroupQueue's objects.
-  def create_queues(queues_hash, minimum_amount)
+  def create_queues(normal_queues_hash, minimum_amount)
     queues = {}
-    queues_hash.each do |name, values|
+    normal_queues_hash.each do |name, values|
       minimum_amount = values['group_size'] if minimum_amount > values['group_size']
       queues = queues.merge(name => GroupQueue.new(name, values))
     end
     [queues, minimum_amount]
   end
 
-
-
-  # Adds an user to the 'any' queue. 
+  # Adds an user to the 'any' queue.
   # @param user [Discordrb::User] User that will join the queue.
   # @return [ADD_USER_ENUM value] The value according to each situation.
   def add_to_any(user)
-    return Commands::ADD_USER_ENUM[:cant_join_any] if !users_queue_map[user].nil? && !users_queue_map[user].empty?
+    return Commands::ADD_USER_ENUM[:cant_join_any] if
+      !users_queue_map[user].nil? && !users_queue_map[user].empty?
     queues['any'].add_user(user)
     add_queue_to_users_map queues['any'], user
     any_full_queues, full_queue = any_full_queues?
     handle_full_queue(full_queue) if any_full_queues
-    (any_full_queues)?(Commands::ADD_USER_ENUM[:filled_up_queue]):(Commands::ADD_USER_ENUM[:added])
+    if any_full_queues
+      Commands::ADD_USER_ENUM[:filled_up_queue]
+    else
+      Commands::ADD_USER_ENUM[:added]
+    end
   end
 
   # Checks whether the given queue is full or if it can be filled up with players from the 'any'
@@ -198,4 +230,6 @@ class QueuesManager
   # HashMap<User, GroupQueue> users_queue_map
   # A hashmap to quickly locate a user's queues.
   attr_reader :users_queue_map
+
+  attr_reader :group_queues
 end
